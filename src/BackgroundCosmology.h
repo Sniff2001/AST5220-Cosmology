@@ -29,6 +29,7 @@ class BackgroundCosmology{
 
     // Splines to be made
     Spline eta_of_x_spline{"eta"};
+    Spline t_of_x_spline{"t"};
  
   public:
 
@@ -47,12 +48,13 @@ class BackgroundCosmology{
     void info() const;
 
     // Do all the solving
-    void solve();
+    void solve(int npts = 1000);
 
     // Output some results to file
     void output(const std::string filename) const;
 
     // Get functions that we must implement
+    double t_of_x(double x) const;
     double eta_of_x(double x) const;
     double H_of_x(double x) const;
     double Hp_of_x(double x) const;
@@ -75,6 +77,7 @@ class BackgroundCosmology{
     // Distance measures
     double get_luminosity_distance_of_x(double x) const;
     double get_comoving_distance_of_x(double x) const;
+    double get_angular_distance_of_x(double x) const;
 
 };
 

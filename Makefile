@@ -3,11 +3,11 @@
 SHELL := /bin/bash
 
 # Set compiler (use =c++17 if you have this availiable)
-CC = g++ -std=c++11 
+CC = g++ -std=c++11 -D_USE_MATH_DEFINES
 
 # Paths to GSL library
-INC  = -I/mn/stornext/u3/hansw/winther/local/include
-LIBS = -L/mn/stornext/u3/hansw/winther/local/lib -lgsl -lgslcblas
+INC  = -IC:/Users/ixyva/source/repos/DEV/vcpkg/packages/gsl_x64-windows/include
+LIBS = -LC:/Users/ixyva/source/repos/DEV/vcpkg/packages/gsl_x64-windows/lib -lgsl -lgslcblas
 
 #=======================================================
 # Options

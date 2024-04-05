@@ -249,7 +249,7 @@ void BackgroundCosmology::info() const{
 void BackgroundCosmology::output(const std::string filename) const{
   const double x_min = -10.0;
   const double x_max =  0.0;
-  const int    n_pts =  100;
+  const int    n_pts =  1e6;
   
   Vector x_array = Utils::linspace(x_min, x_max, n_pts);
 

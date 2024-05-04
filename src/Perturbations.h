@@ -12,6 +12,7 @@
 
 using Vector   = std::vector<double>;
 using Vector2D = std::vector<Vector>;
+using Vector3D = std::vector<Vector2D>;
 
 class Perturbations{
   private:
@@ -40,6 +41,9 @@ class Perturbations{
     Spline2D Phi_spline{"Phi_spline"};
     Spline2D Pi_spline{"Pi_spline"};
     Spline2D Psi_spline{"Psi_spline"};
+    Spline2D Theta0_spline{"Theta0_spline"};
+    Spline2D Theta1_spline{"Theta1_spline"};
+    Spline2D Theta2_spline{"Theta2_spline"};
    
     // Splines of source functions (ST for temperature; SE for polarization)
     Spline2D ST_spline{"ST_spline"};
@@ -65,7 +69,7 @@ class Perturbations{
     int rhs_tight_coupling_ode(double x, double k, const double *y, double *dydx);
     
     // Compute the time when tight coupling ends
-    double get_tight_coupling_time(const double k) const;
+    double get_tight_coupling_time(const double k, Vector x_array) const;
     
     //==========================================================
     // [2] The full ODE system 

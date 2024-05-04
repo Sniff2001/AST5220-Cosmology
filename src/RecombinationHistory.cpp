@@ -225,7 +225,8 @@ void RecombinationHistory::solve_for_optical_depth_tau(){
   //...
   //...
 
-  double tauini = 0.0;
+  //double tauini = 0.0;
+  double tauini = - Constants.c * Constants.sigma_T * this->ne_of_x(x_end)/ cosmo->H_of_x(x_end);
   Vector tau_ic{tauini};
   ODESolver ode;
   ode.solve(dtaudx, x_array, tau_ic);
@@ -246,7 +247,7 @@ void RecombinationHistory::solve_for_optical_depth_tau(){
 
   g_tilde_of_x_spline.create(x_array, g_tilde, "Function visibility");
 
-  double r = 3 * cosmo->get_OmegaR(0)/(4. * cosmo->get_OmegaB(0));
+  double r = 4 * cosmo->get_OmegaR(0)/(3. * cosmo->get_OmegaB(0));
   double scale_factor;
   double shini = Constants.c * std::sqrt(r / std::exp(Constants.x_start) / (3 * (1 + r / std::exp(Constants.x_start)))) / cosmo->Hp_of_x(Constants.x_start);
   ODEFunction dshdx = [&](double x, const double *sh, double *dshdx){
@@ -323,7 +324,7 @@ void RecombinationHistory::info() const{
 //====================================================
 void RecombinationHistory::output(const std::string filename) const{
   std::ofstream fp(filename.c_str());
-  const int npts       = 1e6;
+  const int npts       = 1e4;
   const double x_min   = x_start;
   const double x_max   = x_end;
 

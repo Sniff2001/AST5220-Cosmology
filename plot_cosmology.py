@@ -26,11 +26,13 @@ if __name__ == "__main__" or True:
     luminosity_distance_data_Gpc = supernovadata[1]
     error_data_Gpc = supernovadata[2]
 
+    """
     chidata = np.loadtxt("results_supernovafitting.txt").T
     chi2 = chidata[0]
     hs = chidata[1]
     OmegaMs = chidata[2]
     OmegaKs = chidata[3]
+    """
 
     #### Planck data (2018) arXiv:1807.06209 [astro-ph.CO]
     OmegaK_Planck = 0.001

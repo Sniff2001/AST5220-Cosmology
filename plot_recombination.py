@@ -63,5 +63,6 @@ if __name__ == "__main__":
     table = pd.DataFrame(data=data, index=["x", "z", "t [kyr]"], columns = ["Last Scattering (OD)", "Last Scattering (Vis)", "Recombination", "Recombination (Saha)"])
     print(table)
     print("Free electrons today: ", Xe[-1])
-    print(f"Sound horizon at decoupling: {sound_horizon[np.argmax(gtilde)] / (const.mega * const.parsec):.2f} Mpc")
+    print(f"Sound horizon at decoupling (OD): {sound_horizon[np.argmin(np.abs(tau - 1))] / (const.mega * const.parsec):.2f} Mpc")
+    print(f"Sound horizon at decoupling (Vis): {sound_horizon[np.argmax(gtilde)] / (const.mega * const.parsec):.2f} Mpc")
 

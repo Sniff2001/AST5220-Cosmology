@@ -4,6 +4,13 @@ import scipy.constants as const
 import pandas as pd
 
 if __name__ == "__main__":
+    a = np.loadtxt("cosmology.txt").T
+    x = a[0]
+    eta = a[2]
+    mtoMpc = 1 / (const.mega * const.parsec)
+    kb_enter = x[np.argmin(np.abs(eta * mtoMpc - 2 * np.pi / 0.001))]
+    km_enter = x[np.argmin(np.abs(eta * mtoMpc - 2 * np.pi / 0.01))]
+    ks_enter = x[np.argmin(np.abs(eta * mtoMpc - 2 * np.pi / 0.1))]
     a = np.loadtxt("perturbations_k0.01.txt").T
     x = a[0]
     Theta0_0 = a[1]
@@ -78,6 +85,9 @@ if __name__ == "__main__":
                 c="C1", zorder=1)
     add_to_plot(ax, x, 4*Theta0_1, yscale="log", ylabel="Overdensity", title=r"$\delta_{CDM}, \delta_b, \delta_\gamma$", ls=":",
                 c="C2", zorder=0)
+    ax.axvline(x=kb_enter, c="k", ls="--")
+    ax.axvline(x=km_enter, c="k", ls="--")
+    ax.axvline(x=ks_enter, c="k", ls="--")
     ax.legend()
     fig.show()
     fig, ax = plt.subplots(tight_layout=True)
@@ -93,6 +103,9 @@ if __name__ == "__main__":
     add_to_plot(ax, x, -3*Theta1_2, yscale="log", ylabel="Velocity", title=r"$v_{CDM}, v_b$", ls=":", c="C0", zorder=2)
     add_to_plot(ax, x, -3*Theta1_0, yscale="log", ylabel="Velocity", title=r"$v_{CDM}, v_b$", ls=":", c="C1", zorder=1)
     add_to_plot(ax, x, -3*Theta1_1, yscale="log", ylabel="Velocity", title=r"$v_{CDM}, v_b, v_\gamma$", ls=":", c="C2", zorder=0)
+    ax.axvline(x=kb_enter, c="k", ls="--")
+    ax.axvline(x=km_enter, c="k", ls="--")
+    ax.axvline(x=ks_enter, c="k", ls="--")
     ax.legend()
     fig.show()
     fig, ax = plt.subplots(tight_layout=True)

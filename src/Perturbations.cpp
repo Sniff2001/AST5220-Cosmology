@@ -21,7 +21,7 @@ void Perturbations::solve(){
   integrate_perturbations();
 
   // Compute source functions and spline the result
-  //compute_source_functions();
+  compute_source_functions();
 }
 
 //====================================================
@@ -80,12 +80,6 @@ void Perturbations::integrate_perturbations(){
     ODESolver solver_tight;
     solver_tight.solve(dydx_tight_coupling, sliced_x, y_tight_coupling_ini);
     Vector y_tight_coupling = solver_tight.get_final_data();
-    for (int i = 0; i < y_tight_coupling.size(); i++) {
-      if (run_once)
-        break;
-      std::cout << y_tight_coupling[i] << std::endl;
-    }
-    run_once = true;
 
     //====i===============================================================
     // TODO: Full equation integration
@@ -361,8 +355,10 @@ void Perturbations::compute_source_functions(){
   //=============================================================================
   // ...
   // ...
-  Vector k_array;
-  Vector x_array;
+  Vector k_array(n_k);
+  k_array = Utils::linspace(std::log(k_min), std::log(k_max), n_k);
+  std::for_each(k_array.begin(), k_array.end(), [](double &n) {n = std::exp(n);});
+  Vector x_array = Utils::linspace(x_start, x_end, n_x);
 
   // Make storage for the source functions (in 1D array to be able to pass it to the spline)
   Vector ST_array(k_array.size() * x_array.size());
@@ -372,6 +368,7 @@ void Perturbations::compute_source_functions(){
   for(auto ix = 0; ix < x_array.size(); ix++){
     const double x = x_array[ix];
     for(auto ik = 0; ik < k_array.size(); ik++){
+      const double x = x_array[ix];
       const double k = k_array[ik];
 
       // NB: This is the format the data needs to be stored 
@@ -388,11 +385,14 @@ void Perturbations::compute_source_functions(){
       // ...
 
       // Temperatur source
-      ST_array[index] = 0.0;
-
+      // gsl spline doubly derivative dum, maybe use analytical expr. if wrong
+      ST_array[index] = rec->g_tilde_of_x(x) * (get_Theta(x, k, 0) + get_Psi(x, k) + 0.25 * get_Pi(x, k)) 
+      + std::exp(-rec->tau_of_x(x)) * (Psi_spline.deriv_x(x, k) - Phi_spline.deriv_x(x, k)) - 1 / (Constants.c * k) 
+      * (cosmo->dHpdx_of_x(x) * rec->g_tilde_of_x(x) * get_v_b(x,k) + cosmo->Hp_of_x(x) * rec->dgdx_tilde_of_x(x) * get_v_b(x,k) + cosmo->Hp_of_x(x) * rec->g_tilde_of_x(x) * v_b_spline.deriv_x(x,k))
+      + 3 / (4. * std::pow(Constants.c * k, 2)) * ((std::pow(cosmo->dHpdx_of_x(x), 2) + cosmo->Hp_of_x(x) * cosmo->ddHpddx_of_x(x)) * rec->g_tilde_of_x(x) * get_Pi(x,k) + 3 * cosmo->Hp_of_x(x) * cosmo->dHpdx_of_x(x) * (rec->dgdx_tilde_of_x(x) * get_Pi(x,k) + rec->g_tilde_of_x(x) * Pi_spline.deriv_x(x,k)) + std::pow(cosmo->Hp_of_x(x), 2) * (rec->ddgddx_tilde_of_x(x) * get_Pi(x, k) + 2 * rec->dgdx_tilde_of_x(x) * Pi_spline.deriv_x(x, k) + rec->g_tilde_of_x(x) * Pi_spline.deriv_xx(x, k)));
       // Polarization source
       if(Constants.polarization){
-        SE_array[index] = 0.0;
+        //SE_array[index] = 0.0;
       }
     }
   }
@@ -684,10 +684,10 @@ void Perturbations::output(const double k, const std::string filename) const{
     fp << get_delta_b(x,k)   << " ";
     fp << get_v_cdm(x,k)     << " ";
     fp << get_v_b(x,k)       << " ";
-    /*fp << get_Source_T(x,k)  << " ";
+    fp << get_Source_T(x,k)  << " ";
     fp << get_Source_T(x,k) * Utils::j_ell(5,   arg)           << " ";
     fp << get_Source_T(x,k) * Utils::j_ell(50,  arg)           << " ";
-    fp << get_Source_T(x,k) * Utils::j_ell(500, arg)           << " ";*/
+    fp << get_Source_T(x,k) * Utils::j_ell(500, arg)           << " ";
     fp << "\n";
   };
   std::for_each(x_array.begin(), x_array.end(), print_data);
